@@ -1,0 +1,206 @@
+{% extends 'app1/base.html' %}
+
+{% block title %}{{ profile_user.username }}'s Profile - MyBlog{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <!-- Profile Header -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8">
+        <!-- Cover Image -->
+        <div class="h-32 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+        
+        <div class="px-6 pb-6">
+            <div class="flex flex-col sm:flex-row items-center sm:items-end -mt-16 sm:-mt-12">
+                <!-- Avatar -->
+                <img class="h-24 w-24 sm:h-32 sm:w-32 rounded-full border-4 border-white shadow-lg bg-white" 
+                     src="https://ui-avatars.com/api/?name={{ profile_user.username }}&size=200&background=6366f1&color=fff&bold=true" 
+                     alt="{{ profile_user.username }}">
+                
+                <div class="mt-4 sm:mt-0 sm:ml-6 text-center sm:text-left flex-1">
+                    <h1 class="text-3xl font-bold text-gray-900">{{ profile_user.username }}</h1>
+                    {% if profile_user.email %}
+                    <p class="text-gray-600 mt-1">{{ profile_user.email }}</p>
+                    {% endif %}
+                    <div class="flex items-center justify-center sm:justify-start mt-2 text-sm text-gray-500">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        Joined {{ profile_user.date_joined|date:"F Y" }}
+                    </div>
+                </div>
+
+                {% if is_own_profile %}
+                <div class="mt-4 sm:mt-0">
+                    <a href="{% url 'post_create' %}" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition-colors">
+                        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                        Create Post
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8">
+        <!-- Total Posts -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-600 mb-1">Total Posts</p>
+                    <p class="text-3xl font-bold text-indigo-600">{{ post_count }}</p>
+                </div>
+                <div class="bg-indigo-100 p-3 rounded-lg">
+                    <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Comments -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-600 mb-1">Comments</p>
+                    <p class="text-3xl font-bold text-purple-600">{{ comment_count }}</p>
+                </div>
+                <div class="bg-purple-100 p-3 rounded-lg">
+                    <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Member For -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow sm:col-span-2 md:col-span-1">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-600 mb-1">Member For</p>
+                    <p class="text-3xl font-bold text-pink-600">{{ profile_user.date_joined|timesince }}</p>
+                </div>
+                <div class="bg-pink-100 p-3 rounded-lg">
+                    <svg class="w-8 h-8 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Posts Section -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">
+                {% if is_own_profile %}
+                    My Posts
+                {% else %}
+                    Posts by {{ profile_user.username }}
+                {% endif %}
+            </h2>
+            <span class="text-sm text-gray-500">{{ post_count }} post{{ post_count|pluralize }}</span>
+        </div>
+        
+        <div class="space-y-6">
+            {% for post in posts %}
+            <!-- Post Card -->
+            <article class="border-b border-gray-100 pb-6 last:border-b-0 last:pb-0 hover:bg-gray-50 -mx-6 px-6 py-4 rounded-lg transition-colors">
+                <div class="flex flex-col md:flex-row gap-4">
+                    <!-- Post Image -->
+                    {% if post.image %}
+                    <div class="md:w-48 h-32 rounded-lg overflow-hidden flex-shrink-0 group">
+                        <img src="{{ post.image.url }}" 
+                             alt="{{ post.title }}" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    </div>
+                    {% endif %}
+                    
+                    <div class="flex-1">
+                        <!-- Post Meta -->
+                        <div class="flex items-center text-sm text-gray-500 mb-2 flex-wrap gap-2">
+                            <div class="flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                {{ post.date|date:"M d, Y" }}
+                            </div>
+                            {% if post.category %}
+                            <span class="text-gray-400">•</span>
+                            <span class="bg-indigo-100 text-indigo-600 text-xs px-2 py-1 rounded-full font-medium">
+                                {{ post.category }}
+                            </span>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Post Title -->
+                        <h3 class="text-xl font-bold text-gray-900 mb-2 hover:text-indigo-600 transition-colors">
+                            <a href="{% url 'post_detail' post.pk %}">
+                                {{ post.title }}
+                            </a>
+                        </h3>
+                        
+                        <!-- Post Excerpt -->
+                        <p class="text-gray-600 mb-3 line-clamp-2">
+                            {{ post.content|truncatewords:30 }}
+                        </p>
+                        
+                        <!-- Post Actions -->
+                        <div class="flex items-center justify-between">
+                            <a href="{% url 'post_detail' post.pk %}" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium flex items-center group">
+                                Read More 
+                                <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                </svg>
+                            </a>
+                            
+                            {% if is_own_profile %}
+                            <div class="flex gap-3">
+                                <a href="{% url 'post_update' post.pk %}" class="text-gray-600 hover:text-indigo-600 transition-colors" title="Edit">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                    </svg>
+                                </a>
+                                <a href="{% url 'post_delete' post.pk %}" class="text-gray-600 hover:text-red-600 transition-colors" title="Delete">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </article>
+            {% empty %}
+            <!-- Empty State -->
+            <div class="text-center py-12">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+                    <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-1">No posts yet</h3>
+                <p class="text-sm text-gray-500 mb-6">
+                    {% if is_own_profile %}
+                        Get started by creating your first post and share your thoughts with the world!
+                    {% else %}
+                        {{ profile_user.username }} hasn't posted anything yet.
+                    {% endif %}
+                </p>
+                {% if is_own_profile %}
+                <a href="{% url 'post_create' %}" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition-colors">
+                    <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Create Your First Post
+                </a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

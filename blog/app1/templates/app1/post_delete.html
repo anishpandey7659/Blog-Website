@@ -1,0 +1,28 @@
+{% extends 'app1/base.html' %}
+
+{% block title %}Delete Post - MyBlog{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-6">Delete Post</h1>
+        
+        <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <p class="text-red-800">Are you sure you want to delete "<strong>{{ post.title }}</strong>"?</p>
+            <p class="text-red-600 text-sm mt-2">This action cannot be undone.</p>
+        </div>
+        
+        <form method="POST">
+            {% csrf_token %}
+            <div class="flex gap-4">
+                <button type="submit" class="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 font-medium">
+                    Yes, Delete
+                </button>
+                <a href="{% url 'post_detail' post.pk %}" class="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 font-medium">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

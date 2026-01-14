@@ -1,0 +1,104 @@
+{% extends 'app1/base.html' %}
+
+{% block title %}Explore More - MyBlog{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <h1 class="text-3xl font-bold text-gray-900 mb-6">Explore More</h1>
+        
+    <!-- Search Form -->
+    <form method="GET" action="" class="mb-6">
+        <div class="flex gap-2">
+            <input  
+                type="text" 
+                name="search" 
+                placeholder="Search by title..." 
+                value="{{ request.GET.search }}"
+                class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+            <button 
+                type="submit"
+                class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            >
+                Search
+            </button>
+        </div>
+    </form>
+
+
+    {% for post in posts %}
+    <!-- Post Card -->
+    <article class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-300 flex flex-col md:flex-row h-full md:h-64">
+        <div class="md:w-2/5 h-48 md:h-full relative overflow-hidden group">
+            {% if post.image %}
+                <img src="{{ post.image.url }}" 
+                     alt="{{ post.title }}" 
+                     class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500">
+            {% else %}
+                <img src="https://imgs.search.brave.com/YZ9DoOddeMUGDiIyT1xO9Y1GTPiEy8B2rUYy66PMyEM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/c2h1dHRlcnN0b2Nr/LmNvbS9pbWFnZS12/ZWN0b3Ivbm8taW1h/Z2UtYXZhaWxhYmxl/LXNpZ24taW50ZXJu/ZXQtMjYwbnctMjYx/NzE5MDAzLmpwZw" 
+                     alt="Default" 
+                     class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500">
+            {% endif %}
+            <div class="absolute top-4 left-4">
+                <span class="bg-indigo-600 text-white text-xs px-2 py-1 rounded font-semibold uppercase tracking-wide">
+                    {{ post.category|default:"Blog" }}
+                </span>
+            </div>
+        </div>
+
+        <div class="md:w-3/5 p-6 flex flex-col justify-between">
+            <div>
+                <div class="flex items-center text-sm text-gray-500 mb-2">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    {{ post.date|date:"M d, Y" }}
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2 leading-tight">
+                    <a href="{% url 'post_detail' post.pk %}" class="hover:text-indigo-600 transition-colors">
+                        {{ post.title }}
+                    </a>
+                </h3>
+                <p class="text-gray-600 line-clamp-3 mb-4">
+                    {{ post.content|truncatewords:30 }}
+                </p>
+            </div>
+
+            <div class="flex items-center justify-between mt-auto">
+                <div class="flex items-center">
+                    <img class="h-8 w-8 rounded-full border border-gray-200" 
+                         src="https://ui-avatars.com/api/?name={{ post.author.username }}&background=6366f1&color=fff" 
+                         alt="{{ post.author.username }}">
+                    <span class="ml-2 text-sm font-medium text-gray-700">{{ post.author.username }}</span>
+                </div>
+                <a href="{% url 'post_detail' post.pk %}" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium flex items-center group">
+                    Read More 
+                    <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </article>
+
+    {% empty %}
+    <div class="text-center py-12 bg-white rounded-xl shadow-sm border border-gray-100">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">No posts yet</h3>
+        <p class="mt-1 text-sm text-gray-500">Get started by creating a new post.</p>
+        {% if user.is_authenticated %}
+        <div class="mt-6">
+            <a href="{% url 'post_create' %}" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+                <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Create New Post
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endblock content %}
