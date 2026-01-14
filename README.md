@@ -4,7 +4,7 @@
 ![django](https://img.shields.io/badge/Django-5.0-green?style=for-the-badge&logo=django)
 ![Python](https://img.shields.io/badge/Python-3.10+-blue?style=for-the-badge&logo=python)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38B2AC?style=for-the-badge&logo=tailwind-css)
-![License](https://img.shields.io/badge/License-MIT-yellow.svg)
+![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
 ## 🎥 Demo
 📺 **See it in action!** Watch the full demo video on LinkedIn:
@@ -192,4 +192,5 @@ myblog/
 ##⭐ If you found this project helpful, please give it a star!
 
 ## Made with ❤️ using Django and TailwindCSS
+
 
